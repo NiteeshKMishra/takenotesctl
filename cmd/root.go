@@ -23,7 +23,10 @@ func NewRootCmd(args []string) *cobra.Command {
 		DisableNoDescFlag: false,
 	}
 
-	rootCmd.AddCommand(NewAddCmd())
+	rootCmd.AddCommand(
+		NewAddCmd(),
+		NewListCmd(),
+	)
 
 	return rootCmd
 }

@@ -14,7 +14,7 @@ func SaveNote(title, description string) error {
 	newNote := common.Note{
 		Title:       title,
 		Description: description,
-		CreatedAt:   time.Now().Format(time.UnixDate),
+		CreatedAt:   time.Now().Format(common.DateFormat),
 	}
 
 	err := utils.CheckAndCreateStorageFile()
