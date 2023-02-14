@@ -3,6 +3,7 @@ package utils
 import (
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/NiteeshKMishra/takenotesctl/common"
 )
@@ -74,4 +75,47 @@ func ReadFileData() ([]byte, error) {
 func WriteDataToFile(data []byte) error {
 	filePath, _ := GetPath(false)
 	return os.WriteFile(filePath, data, 0777)
+}
+
+// CreateExportFile created csv file in current working directory
+func CreateExportFile(filename string) (*os.File, error) {
+	dir, err := os.Getwd()
+	if err != nil {
+		return nil, err
+	}
+
+	exportFile := strings.ReplaceAll(filename, " ", "_")
+	if exportFile == "" {
+		exportFile = common.ExportFile
+	}
+	if !strings.HasSuffix(exportFile, ".csv") {
+		exportFile = exportFile + ".csv"
+	}
+	path := filepath.Join(dir, exportFile)
+
+	csvFile, err := os.Create(path)
+	if err != nil {
+		return nil, err
+	}
+
+	return csvFile, nil
+}
+
+// DeleteExportFile deletes csv file from current working directory
+func DeleteExportFile(filename string) error {
+	dir, err := os.Getwd()
+	if err != nil {
+		return err
+	}
+
+	exportFile := strings.ReplaceAll(filename, " ", "_")
+	if exportFile == "" {
+		exportFile = common.ExportFile
+	}
+	if !strings.HasSuffix(exportFile, ".csv") {
+		exportFile = exportFile + ".csv"
+	}
+	path := filepath.Join(dir, exportFile)
+
+	return os.Remove(path)
 }
