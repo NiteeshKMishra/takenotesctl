@@ -45,7 +45,7 @@ func TestAddCmdWithArgs(t *testing.T) {
 		{
 			name: "empty --description flag",
 			args: []string{"--title", "title", "--description", ""},
-			err:  errors.New(titleEmptyError),
+			err:  errors.New(descriptionEmptyError),
 		},
 		{
 			name: "valid --title and --description flags",
@@ -57,7 +57,7 @@ func TestAddCmdWithArgs(t *testing.T) {
 	for _, tc := range testCases {
 		out, err := executeSubCmd(t, cmd, tc.args...)
 		if err != nil {
-			if !strings.ContainsAny(err.Error(), tc.err.Error()) {
+			if !strings.Contains(err.Error(), tc.err.Error()) {
 				t.Errorf("add command not executed successfully, got '%s'", out)
 			}
 		}

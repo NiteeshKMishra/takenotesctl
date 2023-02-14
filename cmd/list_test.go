@@ -47,7 +47,7 @@ func TestListCmdWithArgs(t *testing.T) {
 		{
 			name: "missing --start flag value",
 			args: []string{"--start"},
-			err:  errors.New(`flag needs an argument: 's' in -s`),
+			err:  errors.New(`flag needs an argument: --start`),
 		},
 		{
 			name: "get all notes",
@@ -64,13 +64,12 @@ func TestListCmdWithArgs(t *testing.T) {
 	for _, tc := range testCases {
 		out, err := executeSubCmd(t, cmd, tc.args...)
 		if err != nil {
-			if !strings.ContainsAny(err.Error(), tc.err.Error()) {
+			if !strings.Contains(err.Error(), tc.err.Error()) {
 				t.Errorf("list command not executed successfully, got '%s'", out)
 			}
-		} else {
-			if !strings.ContainsAny(out, title) || !strings.ContainsAny(out, description) {
-				t.Errorf("list command not executed successfully, got '%s'", out)
-			}
+		}
+		if err == nil && (!strings.Contains(out, title) || !strings.Contains(out, description)) {
+			t.Errorf("list command not executed successfully, got '%s'", out)
 		}
 	}
 }

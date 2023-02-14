@@ -67,15 +67,16 @@ func TestSearchCmdWithArgs(t *testing.T) {
 			if !strings.Contains(err.Error(), tc.err.Error()) {
 				t.Errorf("search command not executed successfully, got '%s'", out)
 			}
-		} else {
-			if tc.hasResults {
-				if !strings.Contains(out, tc.args[0]) {
-					t.Errorf("search command not executed successfully, got '%s'", out)
-				}
-			} else {
-				if strings.Contains(out, tc.args[0]) {
-					t.Errorf("search command not executed successfully, got '%s'", out)
-				}
+		}
+		if tc.hasResults {
+			if !strings.Contains(out, tc.args[0]) {
+				t.Errorf("search command not executed successfully, got '%s'", out)
+			}
+		}
+
+		if !tc.hasResults && tc.err == nil {
+			if strings.Contains(out, tc.args[0]) {
+				t.Errorf("search command not executed successfully, got '%s'", out)
 			}
 		}
 	}
