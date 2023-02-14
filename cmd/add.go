@@ -3,8 +3,9 @@ package cmd
 import (
 	"errors"
 
-	"github.com/NiteeshKMishra/takenotesctl/pkg"
 	"github.com/spf13/cobra"
+
+	"github.com/NiteeshKMishra/takenotesctl/pkg"
 )
 
 const addShort = "Add a note"

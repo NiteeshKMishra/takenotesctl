@@ -1,8 +1,9 @@
 package cmd
 
 import (
-	"github.com/NiteeshKMishra/takenotesctl/pkg"
 	"github.com/spf13/cobra"
+
+	"github.com/NiteeshKMishra/takenotesctl/pkg"
 )
 
 const listShort = "List all notes"
