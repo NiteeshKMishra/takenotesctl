@@ -8,33 +8,15 @@ import (
 	"github.com/NiteeshKMishra/takenotesctl/common"
 )
 
-// GetPath returns the path to saving directory and file
-func GetPath(onlyDir bool) (string, error) {
+// CheckAndCreateStorageDirectory check if the directory exists
+// If not adds the directory
+func CheckAndCreateStorageDirectory() error {
 	home, err := os.UserHomeDir()
 	if err != nil {
-		return "", err
-	}
-
-	if onlyDir {
-		dirName := filepath.Join(home, common.AppName)
-		return dirName, nil
-	}
-	fileName := common.StorageFile
-	path := filepath.Join(home, common.AppName, fileName)
-	return path, nil
-}
-
-// CheckAndCreateStorageFile check if the directory and file exists
-// If not adds the directory and file
-func CheckAndCreateStorageFile() error {
-	dirPath, err := GetPath(true)
-	if err != nil {
 		return err
 	}
-	filePath, err := GetPath(false)
-	if err != nil {
-		return err
-	}
+
+	dirPath := filepath.Join(home, common.AppName)
 
 	_, err = os.Stat(dirPath)
 
@@ -42,39 +24,64 @@ func CheckAndCreateStorageFile() error {
 		if !os.IsNotExist(err) {
 			return err
 		} else {
-			err = os.Mkdir(dirPath, 0777)
+			err = os.Mkdir(dirPath, common.DirPermission)
 			if err != nil {
 				return err
 			}
-		}
-	}
-
-	_, err = os.Stat(filePath)
-	if err != nil {
-		if !os.IsNotExist(err) {
-			return err
-		} else {
-			file, err := os.Create(filePath)
-			if err != nil {
-				return err
-			}
-			file.Close()
 		}
 	}
 
 	return nil
 }
 
+// CheckIfDataFileExists checks if file exists in storage directory
+func CheckIfDataFileExists(fileName string) bool {
+	home, _ := os.UserHomeDir()
+	updatedFileName := updateFileName(fileName, "txt")
+	filePath := filepath.Join(home, common.AppName, updatedFileName)
+
+	_, err := os.Stat(filePath)
+
+	return err == nil
+}
+
+// CreateDataFile checks if file exists in storage directory
+// and creates if does not exists
+func CreateDataFile(fileName string) (string, error) {
+	home, _ := os.UserHomeDir()
+	updatedFileName := updateFileName(fileName, "txt")
+	filePath := filepath.Join(home, common.AppName, updatedFileName)
+
+	_, err := os.Stat(filePath)
+	if err != nil {
+		if !os.IsNotExist(err) {
+			return "", err
+		} else {
+			file, err := os.Create(filePath)
+			if err != nil {
+				return "", err
+			}
+			file.Close()
+		}
+	}
+
+	return filePath, nil
+}
+
 // ReadFileData reads all data at once from a file
-func ReadFileData() ([]byte, error) {
-	filePath, _ := GetPath(false)
+// before calling this, make sure the file exists
+func ReadFileData(fileName string) ([]byte, error) {
+	home, _ := os.UserHomeDir()
+	filePath := filepath.Join(home, common.AppName, fileName)
 	return os.ReadFile(filePath)
 }
 
 // WriteDataToFile write data to file
-func WriteDataToFile(data []byte) error {
-	filePath, _ := GetPath(false)
-	return os.WriteFile(filePath, data, 0777)
+// before calling this make sure the file exists
+func WriteDataToFile(fileName string, data []byte) error {
+	home, _ := os.UserHomeDir()
+	filePath := filepath.Join(home, common.AppName, fileName)
+	return os.WriteFile(filePath, data, common.FilePermission)
 }
 
 // CreateExportFile created csv file in current working directory
@@ -84,13 +91,12 @@ func CreateExportFile(filename string) (*os.File, error) {
 		return nil, err
 	}
 
-	exportFile := strings.ReplaceAll(filename, " ", "_")
+	exportFile := filename
 	if exportFile == "" {
 		exportFile = common.ExportFile
 	}
-	if !strings.HasSuffix(exportFile, ".csv") {
-		exportFile = exportFile + ".csv"
-	}
+	exportFile = updateFileName(exportFile, "csv")
+
 	path := filepath.Join(dir, exportFile)
 
 	csvFile, err := os.Create(path)
@@ -108,14 +114,23 @@ func DeleteExportFile(filename string) error {
 		return err
 	}
 
-	exportFile := strings.ReplaceAll(filename, " ", "_")
+	exportFile := filename
 	if exportFile == "" {
 		exportFile = common.ExportFile
 	}
-	if !strings.HasSuffix(exportFile, ".csv") {
-		exportFile = exportFile + ".csv"
-	}
+	exportFile = updateFileName(exportFile, "csv")
+
 	path := filepath.Join(dir, exportFile)
 
 	return os.Remove(path)
+}
+
+// updateFileName removes extra space and replaces spaces with underscore
+func updateFileName(fileName, extension string) string {
+	updatedFileName := strings.ReplaceAll(strings.TrimSpace(fileName), " ", "_")
+	if !strings.HasSuffix(updatedFileName, "."+extension) {
+		updatedFileName = updatedFileName + "." + extension
+	}
+
+	return updatedFileName
 }
