@@ -34,10 +34,17 @@ func CheckAndCreateStorageDirectory() error {
 	return nil
 }
 
+// ReadStorageDirectoryContents read all the files in storage directory
+func ReadStorageDirectoryContents() ([]os.DirEntry, error) {
+	home, _ := os.UserHomeDir()
+	dirPath := filepath.Join(home, common.AppName)
+	return os.ReadDir(dirPath)
+}
+
 // CheckIfDataFileExists checks if file exists in storage directory
 func CheckIfDataFileExists(fileName string) bool {
 	home, _ := os.UserHomeDir()
-	updatedFileName := updateFileName(fileName, "txt")
+	updatedFileName := StandardizeFileName(fileName, "txt")
 	filePath := filepath.Join(home, common.AppName, updatedFileName)
 
 	_, err := os.Stat(filePath)
@@ -49,7 +56,7 @@ func CheckIfDataFileExists(fileName string) bool {
 // and creates if does not exists
 func CreateDataFile(fileName string) (string, error) {
 	home, _ := os.UserHomeDir()
-	updatedFileName := updateFileName(fileName, "txt")
+	updatedFileName := StandardizeFileName(fileName, "txt")
 	filePath := filepath.Join(home, common.AppName, updatedFileName)
 
 	_, err := os.Stat(filePath)
@@ -95,7 +102,7 @@ func CreateExportFile(filename string) (*os.File, error) {
 	if exportFile == "" {
 		exportFile = common.ExportFile
 	}
-	exportFile = updateFileName(exportFile, "csv")
+	exportFile = StandardizeFileName(exportFile, "csv")
 
 	path := filepath.Join(dir, exportFile)
 
@@ -118,19 +125,31 @@ func DeleteExportFile(filename string) error {
 	if exportFile == "" {
 		exportFile = common.ExportFile
 	}
-	exportFile = updateFileName(exportFile, "csv")
+	exportFile = StandardizeFileName(exportFile, "csv")
 
 	path := filepath.Join(dir, exportFile)
 
 	return os.Remove(path)
 }
 
-// updateFileName removes extra space and replaces spaces with underscore
-func updateFileName(fileName, extension string) string {
+// StandardizeFileName removes extra space and replaces spaces with underscore
+func StandardizeFileName(fileName, extension string) string {
 	updatedFileName := strings.ReplaceAll(strings.TrimSpace(fileName), " ", "_")
 	if !strings.HasSuffix(updatedFileName, "."+extension) {
 		updatedFileName = updatedFileName + "." + extension
 	}
+
+	return updatedFileName
+}
+
+// GetStringFromFileName removes file extension and replaces underscore with spaces
+func GetStringFromFileName(fileName string, extension string) string {
+	updatedFileName := fileName
+	if strings.HasSuffix(fileName, "."+extension) {
+		fileParts := strings.Split(fileName, "."+extension)
+		updatedFileName = fileParts[0]
+	}
+	updatedFileName = strings.ReplaceAll(updatedFileName, "_", " ")
 
 	return updatedFileName
 }

@@ -1,8 +1,6 @@
 package pkg
 
 import (
-	"encoding/json"
-
 	"github.com/NiteeshKMishra/takenotesctl/common"
 	"github.com/NiteeshKMishra/takenotesctl/utils"
 )
@@ -12,17 +10,26 @@ import (
 func GetNotes() ([]common.Note, error) {
 	allNotes := []common.Note{}
 
-	fileData, err := utils.ReadFileData()
+	fileEntries, err := utils.ReadStorageDirectoryContents()
 	if err != nil {
 		return allNotes, err
 	}
 
-	if len(fileData) > 0 {
-		err = json.Unmarshal(fileData, &allNotes)
-		if err != nil {
-			return allNotes, err
+	for _, fileEntry := range fileEntries {
+		if !fileEntry.IsDir() {
+			fileName := fileEntry.Name()
+			fileInfo, _ := fileEntry.Info()
+			data, err := utils.ReadFileData(fileName)
+			if err == nil {
+				newNote := common.Note{
+					Title:       utils.GetStringFromFileName(fileName, "txt"),
+					Description: string(data),
+					CreatedAt:   fileInfo.ModTime().Format(common.DateFormat),
+					UpdatedAt:   fileInfo.ModTime().Format(common.DateFormat),
+				}
+				allNotes = append(allNotes, newNote)
+			}
 		}
 	}
-
 	return allNotes, nil
 }
