@@ -10,22 +10,20 @@ import (
 
 // SearchNotes searches notes by keyword
 // and list results in a table
-func SearchNotes(searchTerm string, writer io.Writer) error {
-	err := utils.CheckAndCreateStorageFile()
-	if err != nil {
-		return err
-	}
-
+func SearchNotes(searchTerm string, searchInDesc bool, writer io.Writer) error {
 	filteredNotes := []common.Note{}
-
 	notes, err := GetNotes()
 	if err != nil {
 		return err
 	}
 
 	for _, note := range notes {
-		if strings.Contains(note.Title, searchTerm) ||
-			strings.Contains(note.Description, searchTerm) {
+		contains := strings.Contains(note.Title, searchTerm)
+		if searchInDesc {
+			contains = strings.Contains(note.Title, searchTerm) ||
+				strings.Contains(note.Description, searchTerm)
+		}
+		if contains {
 			filteredNotes = append(filteredNotes, note)
 		}
 	}

@@ -11,11 +11,6 @@ import (
 // ListNotes filter notes by start and and date
 // and list it in a table
 func ListNotes(start, end string, writer io.Writer) error {
-	err := utils.CheckAndCreateStorageFile()
-	if err != nil {
-		return err
-	}
-
 	filteredNotes := []common.Note{}
 	startDate, startErr := time.Parse(common.DateFormat, start)
 	endDate, endErr := time.Parse(common.DateFormat, end)
