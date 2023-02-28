@@ -21,7 +21,7 @@ const titleEmptyError = "'title' cannot be empty"
 func NewAddCmd() *cobra.Command {
 	addCmd := &cobra.Command{
 		Use:     "add",
-		Example: "add -t -d 'my first note'",
+		Example: "takenotesctl add -t -d 'my first note'",
 		Short:   addShort,
 		Long:    addLong,
 		Args:    cobra.ExactArgs(1),

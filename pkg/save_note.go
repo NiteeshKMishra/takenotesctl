@@ -17,7 +17,7 @@ func SaveNote(title, description string) error {
 		CreatedAt:   time.Now().Format(common.DateFormat),
 	}
 
-	err := utils.CheckAndCreateStorageFile()
+	err := utils.CheckAndCreateStorageDirectory()
 	if err != nil {
 		return err
 	}
@@ -34,7 +34,7 @@ func SaveNote(title, description string) error {
 		return err
 	}
 
-	err = utils.WriteDataToFile(fileData)
+	err = utils.WriteDataToFile("", fileData)
 	if err != nil {
 		return err
 	}

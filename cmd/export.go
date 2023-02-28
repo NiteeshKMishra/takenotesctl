@@ -42,7 +42,7 @@ func NewExportCmd() *cobra.Command {
 		},
 	}
 
-	exportCmd.Flags().StringP("filename", "f", "", "filename of the exported file")
+	exportCmd.Flags().StringP("filename", "f", "", "filename of the exported file (optional)")
 
 	return exportCmd
 }

@@ -5,7 +5,7 @@ import (
 	"github.com/NiteeshKMishra/takenotesctl/utils"
 )
 
-// GetNotes gets the data from notes json file
+// GetNotes gets the data from storage directory
 // and converts it Note struct
 func GetNotes() ([]common.Note, error) {
 	allNotes := []common.Note{}
