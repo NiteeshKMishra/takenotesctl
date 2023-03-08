@@ -15,8 +15,6 @@ func TestSearchCmdRun(t *testing.T) {
 		t.Error(err)
 	}
 
-	t.Log(out)
-
 	if !strings.HasPrefix(out, searchLong) {
 		t.Errorf("search command not executed successfully, got '%s'", out)
 	}
@@ -26,11 +24,7 @@ func TestSearchCmdWithArgs(t *testing.T) {
 	cmd := "search"
 
 	//Adding few notes beforehand
-	_, err := executeSubCmd(t, "add", []string{"--title", "my title one", "--description", "my desc one"}...)
-	if err != nil {
-		t.Errorf("not able to add note %s", err.Error())
-	}
-	_, err = executeSubCmd(t, "add", []string{"--title", "my title two", "--description", "my desc two"}...)
+	_, err := executeSubCmd(t, "add", []string{"--title", "search title"}...)
 	if err != nil {
 		t.Errorf("not able to add note %s", err.Error())
 	}
@@ -49,7 +43,7 @@ func TestSearchCmdWithArgs(t *testing.T) {
 		},
 		{
 			name:       "valid search",
-			args:       []string{"one"},
+			args:       []string{"search title"},
 			hasResults: true,
 			err:        nil,
 		},

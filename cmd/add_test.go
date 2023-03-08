@@ -17,8 +17,6 @@ func TestAddCmdRun(t *testing.T) {
 		t.Error(err)
 	}
 
-	t.Log(out)
-
 	if !strings.HasPrefix(out, addLong) {
 		t.Errorf("add command not executed successfully, got '%s'", out)
 	}
@@ -33,23 +31,18 @@ func TestAddCmdWithArgs(t *testing.T) {
 		err  error
 	}{
 		{
-			name: "missing --title flag",
-			args: []string{"--description", "desc"},
+			name: "Title with no args",
+			args: []string{"--title"},
+			err:  errors.New("accepts 1 arg(s), received 0"),
+		},
+		{
+			name: "Missing title flag",
+			args: []string{"note1"},
 			err:  errors.New(`required flag(s) "title" not set`),
 		},
 		{
-			name: "empty --title flag",
-			args: []string{"--title", "", "--description", "desc"},
-			err:  errors.New(titleEmptyError),
-		},
-		{
-			name: "empty --description flag",
-			args: []string{"--title", "title", "--description", ""},
-			err:  errors.New(descriptionEmptyError),
-		},
-		{
-			name: "valid --title and --description flags",
-			args: []string{"--title", "heading", "--description", "desc"},
+			name: "Add with valid title",
+			args: []string{"--title", "note1"},
 			err:  nil,
 		},
 	}
@@ -57,10 +50,15 @@ func TestAddCmdWithArgs(t *testing.T) {
 	for _, tc := range testCases {
 		out, err := executeSubCmd(t, cmd, tc.args...)
 		if err != nil {
-			if !strings.Contains(err.Error(), tc.err.Error()) {
-				t.Errorf("add command not executed successfully, got '%s'", out)
+			if tc.err == nil {
+				t.Errorf("should not get an error, but got '%s'", err.Error())
+			} else {
+				if !strings.Contains(err.Error(), tc.err.Error()) {
+					t.Errorf("add command not executed successfully, got '%s'", out)
+				}
 			}
 		}
+
 		if out == "" {
 			allNotes, err := pkg.GetNotes()
 			if err != nil {

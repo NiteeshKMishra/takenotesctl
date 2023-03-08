@@ -17,8 +17,6 @@ func TestExportCmdRun(t *testing.T) {
 		t.Error(err)
 	}
 
-	t.Log(out)
-
 	if !strings.HasPrefix(out, exportLong) {
 		t.Errorf("export command not executed successfully, got '%s'", out)
 	}
@@ -28,11 +26,11 @@ func TestExportCmdWithArgs(t *testing.T) {
 	cmd := "export"
 
 	//Adding few notes beforehand
-	_, err := executeSubCmd(t, "add", []string{"--title", "my title one", "--description", "my desc one"}...)
+	_, err := executeSubCmd(t, "add", []string{"--title", "export title one"}...)
 	if err != nil {
 		t.Errorf("not able to add note %s", err.Error())
 	}
-	_, err = executeSubCmd(t, "add", []string{"--title", "my title two", "--description", "my desc two"}...)
+	_, err = executeSubCmd(t, "add", []string{"--title", "export title two"}...)
 	if err != nil {
 		t.Errorf("not able to add note %s", err.Error())
 	}
@@ -74,7 +72,7 @@ func TestExportCmdWithArgs(t *testing.T) {
 				t.Errorf("export command not executed successfully, got '%s'", err.Error())
 			}
 
-			if !strings.Contains(string(data), "one") {
+			if !strings.Contains(string(data), "export title one") {
 				t.Errorf("file did not exported correctly, got '%s'", string(data))
 			}
 

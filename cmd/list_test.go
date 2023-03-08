@@ -32,9 +32,8 @@ func TestListCmdWithArgs(t *testing.T) {
 	endDate := time.Now().Add(60 * 60 * 24 * time.Second).Format(common.DateFormat)
 
 	//Add a note beforehand
-	title := "heading"
-	description := "desc"
-	_, err := executeSubCmd(t, "add", []string{"--title", title, "--description", description}...)
+	title := "list note"
+	_, err := executeSubCmd(t, "add", []string{"--title", title}...)
 	if err != nil {
 		t.Errorf("not able to add note %s", err.Error())
 	}
@@ -68,7 +67,7 @@ func TestListCmdWithArgs(t *testing.T) {
 				t.Errorf("list command not executed successfully, got '%s'", out)
 			}
 		}
-		if err == nil && (!strings.Contains(out, title) || !strings.Contains(out, description)) {
+		if err == nil && (!strings.Contains(out, title)) {
 			t.Errorf("list command not executed successfully, got '%s'", out)
 		}
 	}

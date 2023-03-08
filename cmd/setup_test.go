@@ -2,23 +2,25 @@ package cmd
 
 import (
 	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/NiteeshKMishra/takenotesctl/common"
-	"github.com/NiteeshKMishra/takenotesctl/utils"
 )
 
 func TestMain(m *testing.M) {
-	//Change storage file to a test file
-	oldStorageFile := common.StorageFile
-	common.StorageFile = "notes_test.json"
+	//Change storage directory to a test directory
+	oldStorageDir := common.AppName
+	common.AppName = "takenotesctl_test"
 	exit := m.Run()
-	//Delete test storage file if it exists
-	//Change storage file to original file
-	filepath, err := utils.GetPath(false)
+	//Delete test storage directory if it exists
+	//Change storage directory to original location
+	home, _ := os.UserHomeDir()
+	dirPath := filepath.Join(home, common.AppName)
+	_, err := os.Stat(dirPath)
 	if err == nil {
-		os.Remove(filepath)
+		os.RemoveAll(dirPath)
 	}
-	common.StorageFile = oldStorageFile
+	common.AppName = oldStorageDir
 	os.Exit(exit)
 }
