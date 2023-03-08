@@ -18,10 +18,10 @@ func SearchNotes(searchTerm string, searchInDesc bool, writer io.Writer) error {
 	}
 
 	for _, note := range notes {
-		contains := strings.Contains(note.Title, searchTerm)
+		contains := strings.Contains(strings.ToLower(note.Title), searchTerm)
 		if searchInDesc {
-			contains = strings.Contains(note.Title, searchTerm) ||
-				strings.Contains(note.Description, searchTerm)
+			contains = strings.Contains(strings.ToLower(note.Title), searchTerm) ||
+				strings.Contains(strings.ToLower(note.Description), searchTerm)
 		}
 		if contains {
 			filteredNotes = append(filteredNotes, note)

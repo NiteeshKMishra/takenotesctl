@@ -21,15 +21,15 @@ func ListNotes(start, end string, writer io.Writer) error {
 	}
 
 	for _, note := range existingNotes {
-		noteCreateDate, _ := time.Parse(common.DateFormat, note.CreatedAt)
+		noteUpdateDate, _ := time.Parse(common.DateFormat, note.UpdatedAt)
 		if startErr == nil {
-			if noteCreateDate.UnixNano() < startDate.UnixNano() {
+			if noteUpdateDate.UnixNano() < startDate.UnixNano() {
 				continue
 			}
 		}
 
 		if endErr == nil {
-			if noteCreateDate.UnixNano() > endDate.UnixNano() {
+			if noteUpdateDate.UnixNano() > endDate.UnixNano() {
 				continue
 			}
 		}

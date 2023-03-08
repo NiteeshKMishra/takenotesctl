@@ -22,10 +22,12 @@ func GetNotes() ([]common.Note, error) {
 			data, err := utils.ReadFileData(fileName)
 			if err == nil {
 				newNote := common.Note{
-					Title:       utils.GetStringFromFileName(fileName, "txt"),
-					Description: string(data),
-					CreatedAt:   fileInfo.ModTime().Format(common.DateFormat),
-					UpdatedAt:   fileInfo.ModTime().Format(common.DateFormat),
+					Title:       utils.GetStringFromFileName(fileName, common.Extension),
+					Description: utils.RemoveMetadata(string(data)),
+					UpdatedAt:   utils.GetMetadataValue(fileName, "UpdatedAt"),
+				}
+				if newNote.UpdatedAt == "" {
+					newNote.UpdatedAt = fileInfo.ModTime().Format(common.DateFormat)
 				}
 				allNotes = append(allNotes, newNote)
 			}

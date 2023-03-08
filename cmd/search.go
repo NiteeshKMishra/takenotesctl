@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"strings"
+
 	"github.com/spf13/cobra"
 
 	"github.com/NiteeshKMishra/takenotesctl/pkg"
@@ -18,7 +20,7 @@ func NewSearchCmd() *cobra.Command {
 		Use:     "search",
 		Short:   searchShort,
 		Long:    searchLong,
-		Example: "takenotesctl search -t -d 'note data'",
+		Example: "takenotesctl search -d 'note data'",
 		Args:    cobra.ExactArgs(1),
 		PreRunE: func(cmd *cobra.Command, args []string) error {
 			err := utils.CheckAndCreateStorageDirectory()
@@ -31,12 +33,12 @@ func NewSearchCmd() *cobra.Command {
 			searchTerm := args[0]
 
 			searchInDesc := false
-			descriptionFlag := cmd.Flag("description")
-			if descriptionFlag != nil {
+			descriptionFlag, _ := cmd.Flags().GetBool("description")
+			if descriptionFlag {
 				searchInDesc = true
 			}
 
-			err := pkg.SearchNotes(searchTerm, searchInDesc, cmd.OutOrStderr())
+			err := pkg.SearchNotes(strings.ToLower(searchTerm), searchInDesc, cmd.OutOrStderr())
 			if err != nil {
 				return err
 			}

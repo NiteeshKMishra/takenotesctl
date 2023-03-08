@@ -44,7 +44,7 @@ func ReadStorageDirectoryContents() ([]os.DirEntry, error) {
 // CheckIfDataFileExists checks if file exists in storage directory
 func CheckIfDataFileExists(fileName string) bool {
 	home, _ := os.UserHomeDir()
-	updatedFileName := StandardizeFileName(fileName, "txt")
+	updatedFileName := StandardizeFileName(fileName, common.Extension)
 	filePath := filepath.Join(home, common.AppName, updatedFileName)
 
 	_, err := os.Stat(filePath)
@@ -56,7 +56,7 @@ func CheckIfDataFileExists(fileName string) bool {
 // and creates if does not exists
 func CreateDataFile(fileName string) (string, error) {
 	home, _ := os.UserHomeDir()
-	updatedFileName := StandardizeFileName(fileName, "txt")
+	updatedFileName := StandardizeFileName(fileName, common.Extension)
 	filePath := filepath.Join(home, common.AppName, updatedFileName)
 
 	_, err := os.Stat(filePath)

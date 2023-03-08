@@ -21,10 +21,10 @@ func ExportNotes(filename string) error {
 	defer csvFile.Close()
 
 	csvwriter := csv.NewWriter(csvFile)
-	csvwriter.Write([]string{"Title", "Description", "CreatedAt", "UpdatedAt"})
+	csvwriter.Write([]string{"Title", "Description", "UpdatedAt" + "\t"})
 
 	for _, note := range notes {
-		noteData := []string{note.Title, note.Description, note.CreatedAt, note.UpdatedAt}
+		noteData := []string{note.Title, note.Description, note.UpdatedAt + "\t"}
 		err := csvwriter.Write(noteData)
 
 		if err != nil {

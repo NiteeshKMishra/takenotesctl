@@ -4,10 +4,12 @@ import (
 	"errors"
 	"fmt"
 	"os/exec"
+	"time"
 
 	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
 
+	"github.com/NiteeshKMishra/takenotesctl/common"
 	"github.com/NiteeshKMishra/takenotesctl/utils"
 )
 
@@ -66,8 +68,8 @@ func NewAddCmd() *cobra.Command {
 				return err
 			}
 
-			descriptionFlag := cmd.Flag("description")
-			if descriptionFlag != nil {
+			descriptionFlag, _ := cmd.Flags().GetBool("description")
+			if descriptionFlag {
 				openVicmd := exec.CommandContext(cmd.Context(), "vim", filePath)
 				openVicmd.Stdin = cmd.InOrStdin()
 				openVicmd.Stdout = cmd.OutOrStdout()
@@ -77,6 +79,14 @@ func NewAddCmd() *cobra.Command {
 					return err
 				}
 			}
+
+			err = utils.AddMetadata(title, map[string]string{
+				"UpdatedAt": time.Now().Format(common.DateFormat),
+			})
+			if err != nil {
+				return err
+			}
+
 			fmt.Fprintln(cmd.OutOrStdout(), "Note added successfully")
 
 			return nil
