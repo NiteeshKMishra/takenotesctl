@@ -7,6 +7,14 @@ takenotesctl is a cli tool to manage notes
 takenotesctl is cli app to and view notes from cli. Notes can be filtered by created date,
 can be searched by matching fields text and can also be exported in a csv file.
 
+#### Installation
+
+```
+brew tap NiteeshKMishra/takenotesctl \
+https://github.com/NiteeshKMishra/takenotesctl
+brew install takenotesctl
+```
+
 #### Usage
 
 ```
